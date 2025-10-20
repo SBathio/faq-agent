@@ -1,0 +1,38 @@
+uploaded_docs/
+# Python cache and virtual env
+__pycache__/
+*.py[cod]
+*.log
+*.sqlite3
+.env
+.env.*
+.venv/
+venv/
+.idea/
+*.DS_Store
+
+# FastAPI and LangChain temp files
+*.db
+*.json
+*.yaml
+
+# OS + editor stuff
+*.swp
+*.swo
+.vscode/
+
+# Uploaded docs (already added)
+uploaded_docs/
+
+# LangChain cache (if used)
+lc_cache/
+
+# LangChain / RAG output artifacts
+rag/vector_store/
+rag/uploads/
+docs.pkl
+index.pkl
+index.faiss
+vector_store.index
+faq_example.txt
+faq1.txt
