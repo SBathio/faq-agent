@@ -1,7 +1,6 @@
-from langchain.tools import Tool
-from langchain.agents import initialize_agent
-from langchain.agents.agent_types import AgentType
+from langchain_core.tools import Tool
 from langchain_openai import ChatOpenAI
+# Removed unused AgentExecutor and create_react_agent
 from utils.config import OPENAI_API_KEY, MODEL_NAME, TEMPERATURE
 from rag.retriever import get_top_k_chunks
 from models.prompt_template import get_prompt_template

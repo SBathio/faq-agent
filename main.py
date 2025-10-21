@@ -1,13 +1,4 @@
 from fastapi import FastAPI
-from api.routes import router
-
-app = FastAPI(title="FAQ Agent API")
-app.include_router(router)
-
-@app.get("/", tags=["Welcome"])
-def read_root():
-    return {"message": "Welcome to the Agentic FAQ Assistant!"}
-
 from api.routes import router as ask_router
 from api.upload import router as upload_router
 
@@ -19,3 +10,9 @@ app = FastAPI(
 
 app.include_router(ask_router)
 app.include_router(upload_router)
+
+@app.get("/", tags=["Welcome"])
+def read_root():
+    return {"message": "Welcome to the Agentic FAQ Assistant!"}
+
+print("✅ FAQ Agent app is starting up...")
