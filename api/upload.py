@@ -7,7 +7,7 @@ router = APIRouter()
 UPLOAD_DIR = "rag/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.post("/upload", tags=["Document Management"])
+@router.post("/", tags=["Document Management"])
 async def upload_file(file: UploadFile = File(...)):
     file_location = os.path.join(UPLOAD_DIR, file.filename)
 

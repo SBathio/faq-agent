@@ -1,0 +1,170 @@
+Here’s your complete AGENTIC_ARCHITECTURE.md file in Markdown format:
+
+⸻
+
+
+# 🤖 FAQ Agentic System – LangChain Agent Architecture
+
+This document outlines the full architecture of the `faq-agent` system, which uses **LangChain Agents**, a retrieval-augmented generation (RAG) pipeline, and custom tools to provide intelligent FAQ responses with citations.
+
+---
+
+## 🧠 Overview
+
+- **Tech Stack:** FastAPI, LangChain, OpenAI, FAISS (or similar)
+- **LLM Framework:** LangChain AgentExecutor with `create_openai_functions_agent`
+- **Key Features:** Tool use, retrieval context, dynamic prompts, OpenAI functions
+
+---
+
+## 📈 System Flow Diagram
+
+```text
+        ┌────────────────────────────┐
+        │      FastAPI Server       │
+        │ (main.py + api/routes.py) │
+        └────────────┬──────────────┘
+                     │
+                     ▼
+          ┌────────────────────┐
+          │ POST /ask endpoint │◄─────────────┐
+          └────────┬───────────┘              │
+                   ▼                          │
+      ┌──────────────────────────┐            │
+      │ run_agent(query: str)    │            │
+      │ from agent_executor.py   │            │
+      └────────┬─────────────────┘            │
+               │                              │
+               ▼                              │
+    ┌───────────────────────────────┐         │
+    │ LangChain AgentExecutor       │         │
+    │ - created via                │          │
+    │   create_openai_functions_agent()       │
+    │ - initialized w/ Tool: search_faq_tool  │
+    └────────┬──────────────────────┘         │
+             ▼                                │
+ ┌─────────────────────────────┐              │
+ │ Tool: search_faq_tool()     │              │
+ │ - calls get_top_k_chunks()  │              │
+ │ - builds prompt from template             │
+ │ - retrieves top K docs       │            │
+ │ - formats prompt             │            │
+ └────────┬────────────────────┘             │
+          ▼                                   │
+  ┌──────────────────────────────┐           │
+  │ Prompt sent to LLM (OpenAI)  │──────────►│
+  └──────────────────────────────┘           │
+          ▼
+  ┌──────────────────────────────┐
+  │ Agent returns final output   │
+  │ + relevant source metadata   │
+  └──────────────────────────────┘
+          ▼
+  ┌──────────────────────────────┐
+  │ JSON Response to User        │
+  │ query + answer + sources     │
+  └──────────────────────────────┘
+
+
+⸻
+
+🧩 Module Breakdown
+
+Module	Description
+main.py	Initializes the FastAPI app and mounts the /ask route
+api/routes.py	Defines the /ask POST route and calls run_agent()
+agent/agent_executor.py	Creates the LangChain Agent using create_openai_functions_agent()
+agent/faq_agent.py	Re-exports the agent runner for easy import
+rag/retriever.py	Retrieves top-K chunks from a FAISS vectorstore
+models/prompt_template.py	Houses style-specific prompt formatting logic
+utils/config.py	Loads .env configs (OpenAI API key, model name, etc.)
+
+
+⸻
+
+🛠️ LangChain Tools
+
+🔧 SearchFAQ Tool
+	•	Purpose: Retrieve and format top-k matching FAQs
+	•	Functionality:
+	•	Accepts a query
+	•	Searches vector store for relevant context
+	•	Returns formatted prompt and citations
+
+⸻
+
+🧠 Agent Strategy
+	•	Uses create_openai_functions_agent() to create an OpenAI function-call capable agent
+	•	Loads default system prompt from:
+
+langchain hub: hwchase17/openai-functions-agent
+
+
+	•	Powered by langchain-openai.ChatOpenAI
+
+⸻
+
+📥 Input → 📤 Output Format
+
+Request
+
+POST /ask
+{
+  "query": "How do I request a refund?",
+  "style": "default"
+}
+
+Response
+
+{
+  "query": "How do I request a refund?",
+  "answer": "You can request a refund by emailing support within 30 days.",
+  "sources": [
+    {
+      "source": "refund_policy.txt",
+      "content": "To request a refund, please contact support@domain.com within 30 days."
+    }
+  ]
+}
+
+
+⸻
+
+🧰 Future Extensions
+
+Feature	Status	Notes
+✅ Tool Integration	Done	SearchFAQ Tool
+✅ OpenAI Function Agent	Done	Uses create_openai_functions_agent()
+⏳ Memory / Chat History	In Progress	Will use ConversationBufferMemory or Redis-backed store
+⏳ Multi-Tool Agent	Planned	Add tools like web_search, db_lookup, ticket_creator, etc.
+⏳ LangGraph Support	Planned	For stateful workflows (LangGraph + LangChain v0.3+)
+
+
+⸻
+
+🧪 Local Run Command
+
+uvicorn main:app --reload
+
+Access the FastAPI app at: http://127.0.0.1:8000/docs
+
+⸻
+
+📎 Related Files
+	•	.env.example – API keys and model configs
+	•	requirements.txt – pinned working versions
+	•	README.md – project overview
+	•	AGENTIC_ARCHITECTURE.md – system flow and logic (this file)
+
+⸻
+
+Maintained by SBathio – GitHub: github.com/SBathio
+
+---
+
+Would you like me to:
+- 💾 Save this as a `AGENTIC_ARCHITECTURE.md` file in your project?
+- 🖼 Generate a PNG version of the diagram?
+- 🧩 Add sections for LangGraph or multi-agent orchestration?
+
+Let me know what’s next.
